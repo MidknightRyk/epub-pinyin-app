@@ -1,0 +1,7 @@
+remi
+pypinyin
+beautifulsoup4
+lxml
+ebooklib
+opencc-python-reimplemented
+tqdm
