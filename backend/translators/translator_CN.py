@@ -10,12 +10,12 @@ def translate_paragraphs(paragraphs, batch_size=20):
     translated_output = []
 
     try:
-        print("🚀 Trying full chapter translation...")
+        print("Trying full chapter translation...")
         result = translator.translate(paragraphs, src='zh-cn', dest='en')
         return [r.text for r in result]
     except Exception as e:
-        print(f"⚠️ Full chapter translation failed: {e}")
-        print(f"🔄 Falling back to batch translation with batch size {batch_size}...")
+        print(f"Full chapter translation failed: {e}")
+        print(f"Falling back to batch translation with batch size {batch_size}...")
         
         for i in range(0, len(paragraphs), batch_size):
             batch = paragraphs[i:i+batch_size]
@@ -24,7 +24,7 @@ def translate_paragraphs(paragraphs, batch_size=20):
                 batch_result = translator.translate(batch, src='zh-cn', dest='en')
                 translated_output.extend([r.text for r in batch_result])
             except Exception as batch_e:
-                print(f"❌ Batch translation failed at batch {i//batch_size + 1}: {batch_e}")
+                print(f"Batch translation failed at batch {i//batch_size + 1}: {batch_e}")
                 raise
             time.sleep(1)  # delay to avoid rate limits
 
@@ -48,3 +48,33 @@ def sentence_splitter(text: str) -> List[str]:
     sentence_endings = r"(?<=[。！？])"
     sentences = re.split(sentence_endings, text)
     return [s.strip() for s in sentences if s.strip()]
+
+def split_text_readable(text, max_len=23):
+    CLOSING_PUNCT = '。！？；，、：」』”’）】》'
+    chunks = []
+    buf = ''
+    i = 0
+    while i < len(text):
+        buf += text[i]
+        i += 1
+
+        # If buffer reaches max length or hits punctuation
+        if len(buf) >= max_len:
+            # If last char is good for breaking
+            if buf[-1] in CLOSING_PUNCT:
+                chunks.append(buf)
+                buf = ''
+            else:
+                # Look for last closing punctuation in buffer
+                for j in range(len(buf) - 1, -1, -1):
+                    if buf[j] in CLOSING_PUNCT:
+                        chunks.append(buf[:j + 1])
+                        buf = buf[j + 1:]
+                        break
+                else:
+                    # No punctuation? Force break
+                    chunks.append(buf)
+                    buf = ''
+    if buf:
+        chunks.append(buf)
+    return chunks

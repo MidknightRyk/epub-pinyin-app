@@ -1,83 +1,100 @@
-// pages/index.tsx
 import { useState } from 'react';
-import { uploadFile, startTranslation } from '../utils/api';
+import { startTranslation } from '../utils/api';
+import { FileUploader } from '@/components/FileUpload';
+import { ConfigWindow } from '@/components/ConfigWindow';
+import { LogWindow } from '@/components/LogWindow';
+import { SupportedLanguages } from '@/utils/enums';
 
-export default function Home() {
-  const [file, setFile] = useState<File | null>(null);
-  const [includeEnglish, setIncludeEnglish] = useState(false);
-  const [resumeFrom, setResumeFrom] = useState('');
-  const [log, setLog] = useState('Output log...');
+export default function HomeEG2() {
+    const [file, setFile] = useState<File | null>(null);
+    const [eng, setEng] = useState(false);
+    const [rom, setRom] = useState(false);
+    const [lang, setLang] = useState<SupportedLanguages>(SupportedLanguages.Chinese);
+    const [kana, setKana] = useState(false);
+    const [log, setLog] = useState('Output log...');
+    const [outFmt, setOutFmt] = useState('txt');
+    //const [resFrom, setResFrom] = useState('');
 
-  const handleUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('include_english', 'true');
-    formData.append('resume_from', '0');
-    formData.append('file_type', 'epub');
+    const handleTranslate = async () => {
+        try {
+            setLog(prev => prev + `\nStarting translation...`);
 
-    const res = await fetch('http://127.0.0.1:8000/translate/', {
-      method: 'POST',
-      body: formData,
-    });
+            if (!file) {
+                setLog(prev => prev + `\nNo file uploaded yet.`);
+                return;
+            }
 
-    const data = await res.json();
-    console.log('Translation result:', data.translation);
-  };
+            await startTranslation(file.name, true, true);
 
-  const handleTranslate = async () => {
-    try {
-      setLog(prev => prev + `\nStarting translation...`);
-      await startTranslation(includeEnglish, resumeFrom);
-      setLog(prev => prev + `\nTranslation finished.`);
-    } catch (err) {
-      setLog(prev => prev + `\nTranslation error: ${err}`);
-    }
-  };
+            setLog(prev => prev + `\nTranslation finished.`);
+        } catch (err) {
+            setLog(prev => prev + `\nTranslation error: ${err}`);
+        }
+    };
 
-  return (
-    <main style={{ padding: '2rem' }}>
-      <h1>📘 EPUB Pinyin Translator</h1>
+    return (
+        <main className="bg-aura-bg text-aura-fg flex min-h-screen font-mono">
+            {/* Sidebar */}
+            <aside className="bg-aura-bg-soft/40 border-aura-bg-soft/50 w-64 space-y-4 border-r p-6">
+                <h1 className="text-aura-purple glow-purple text-xl font-bold">EPUB Pinyin</h1>
+                {['Quickstart', 'Upload', 'Translate', 'Download'].map(label => (
+                    <a
+                        key={label}
+                        href="#"
+                        className="text-aura-fg/70 hover:text-aura-cyan hover:bg-aura-bg-soft/60 block rounded-md px-3 py-2 text-sm font-medium transition"
+                    >
+                        {label}
+                    </a>
+                ))}
+            </aside>
 
-      <input type="file" accept=".epub" onChange={e => setFile(e.target.files?.[0] || null)} />
-      <br />
-      <br />
+            {/* Main */}
+            <section className="max-w-4xl flex-1 space-y-8 p-8">
+                <header>
+                    <h2 className="text-aura-cyan text-3xl font-bold">Quickstart</h2>
+                    <p className="text-aura-comment mt-2">
+                        Translate Chinese EPUB files to inline Pinyin (and optional English).
+                    </p>
+                </header>
 
-      <label>
-        <input
-          type="checkbox"
-          checked={includeEnglish}
-          onChange={e => setIncludeEnglish(e.target.checked)}
-        />
-        Include English Translations
-      </label>
-      <br />
-      <br />
+                {/* Step 1 */}
+                <FileUploader file={file} log={log} onUploaded={setFile} updateLog={setLog} />
 
-      <input
-        type="text"
-        placeholder="Resume from chapter number (optional)"
-        value={resumeFrom}
-        onChange={e => setResumeFrom(e.target.value)}
-      />
-      <br />
-      <br />
+                {/* Step 2 */}
 
-      <button onClick={handleUpload}>Upload File</button>
-      <button onClick={handleTranslate} style={{ marginLeft: '1rem' }}>
-        Start Translation
-      </button>
+                <ConfigWindow
+                    lang={lang}
+                    kana={kana}
+                    eng={eng}
+                    rom={rom}
+                    onChangeLang={setLang}
+                    onChangeKana={setKana}
+                    onChangeEng={setEng}
+                    onChangeRom={setRom}
+                />
 
-      <pre
-        style={{
-          whiteSpace: 'pre-wrap',
-          marginTop: '2rem',
-          background: '#111',
-          color: '#0f0',
-          padding: '1rem',
-        }}
-      >
-        {log}
-      </pre>
-    </main>
-  );
+                {/* Step 3 */}
+                <div className="bg-aura-bg-soft/30 border-aura-bg-soft/50 rounded-lg border p-6">
+                    <h3 className="text-aura-red mb-3 text-xl font-semibold">
+                        3. Translate & download
+                    </h3>
+                    <select value={outFmt} onChange={e => setOutFmt(e.target.value)}>
+                        <option value="txt">TXT</option>
+                        <option value="json">JSON</option>
+                        <option value="epub">EPUB</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                    <button
+                        onClick={handleTranslate}
+                        className="bg-aura-cyan text-aura-bg hover:bg-aura-cyan/80 rounded px-4 py-2 font-semibold transition"
+                    >
+                        Start Translation
+                    </button>
+                </div>
+
+                {/* Terminal log */}
+                <LogWindow log={log} />
+            </section>
+        </main>
+    );
 }

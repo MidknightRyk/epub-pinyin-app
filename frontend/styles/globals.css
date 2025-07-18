@@ -1,26 +1,28 @@
-@import "tailwindcss";
+/* globals.css */
+@import 'tailwindcss';
+@import '@fontsource/jetbrains-mono';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+    --color-aura-bg: #15141b;
+    --color-aura-bg-soft: #1e1d24;
+    --color-aura-fg: #edecee;
+    --color-aura-purple: #a277ff;
+    --color-aura-cyan: #61ffca;
+    --color-aura-green: #5de4c7;
+    --color-aura-orange: #ffca85;
+    --color-aura-red: #ff6767;
+    --color-aura-comment: #6d6d6d;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@utility glow-purple {
+    text-shadow: 0 0 6px #a277ff;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@utility glow-cyan {
+    text-shadow: 0 0 6px #61ffca;
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility glow-green {
+    text-shadow: 0 0 6px #5de4c7;
+}
+@utility ring-aura-purple {
+    --tw-ring-color: #a277ff;
 }
