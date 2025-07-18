@@ -9,6 +9,8 @@ def install_packages():
         "beautifulsoup4",
         "opencc-python-reimplemented",
         "pypinyin",
+        "hangul",
+        "pykakasi",
         "lxml",
         "setuptools",
         "fastapi",
