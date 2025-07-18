@@ -1,7 +1,5 @@
 // components/LogWindow.tsx
-import { useState, FC } from 'react';
-import { uploadFile } from '../utils/api';
-import { LanguageSelector, SupportedLang } from './LanguageSelection';
+import { FC } from 'react';
 
 interface LogWindowProps {
     log: string;
@@ -12,10 +10,10 @@ export const LogWindow: FC<LogWindowProps> = ({ log, classname = '' }) => {
     return (
         <div className={classname}>
             <details className="mt-6">
-                <summary className="cursor-pointer text-aura-cyan font-semibold">
+                <summary className="text-aura-cyan cursor-pointer font-semibold">
                     Output log
                 </summary>
-                <pre className="mt-2 p-4 bg-aura-bg-soft/20 rounded text-sm text-aura-comment overflow-x-auto">
+                <pre className="bg-aura-bg-soft/20 text-aura-comment mt-2 overflow-x-auto rounded p-4 text-sm">
                     {log}
                 </pre>
             </details>
