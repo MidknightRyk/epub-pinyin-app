@@ -3,6 +3,7 @@ import subprocess
 
 def install_packages():
     packages = [
+        "es-hangul",
         "googletrans==3.1.0a0",
         "tqdm",
         "ebooklib",

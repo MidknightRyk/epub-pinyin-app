@@ -17,7 +17,7 @@ export const uploadFile = async (file: File) => {
 export const startTranslation = async (
     filename: string,
     showPinyin: boolean,
-    showEnglish: boolean,
+    showEnglish: boolean
 ) => {
     return axios.post(`${BASE_URL}/translate`, {
         filename,

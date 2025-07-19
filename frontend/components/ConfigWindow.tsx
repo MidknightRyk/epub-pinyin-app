@@ -1,7 +1,8 @@
 // components/ConfigWindow.tsx
 import { FC } from 'react';
-import { LanguageSelector } from './LanguageSelection';
+import { LanguageSelector } from './LanguageSelector';
 import { SupportedLanguages } from '@/utils/enums';
+import { ToggleButton } from './ToggleButton';
 
 interface ConfigWindowProps {
     lang: SupportedLanguages;
@@ -27,54 +28,25 @@ export const ConfigWindow: FC<ConfigWindowProps> = ({
     <div className="bg-aura-bg-soft/30 border-aura-bg-soft/50 space-y-4 rounded-lg border p-6">
         <h3 className="text-aura-orange text-xl font-semibold">2. Configure translation</h3>
 
-        {/* Language selector (always present) */}
-        <LanguageSelector
-            lang={lang}
-            kana={kana}
-            onChangeLang={onChangeLang}
-            onChangeKana={onChangeKana}
-        />
+        {/* Language selector */}
+        <LanguageSelector lang={lang} onChangeLang={onChangeLang} />
 
         {/* Buttons row */}
         <div className="flex items-center gap-6">
-            <button
-                type="button"
-                onClick={() => onChangeEng(!eng)}
-                className={`text-aura-bg bg-aura-purple flex-1 rounded px-4 py-2 text-sm font-semibold transition-all duration-200 ${
-                    eng
-                        ? 'ring-offset-aura-bg ring-aura-purple shadow-[0_0_8px_#a277ff] ring-2 ring-offset-2'
-                        : 'hover:bg-aura-purple/80'
-                } `}
-            >
+            <ToggleButton active={eng} onClick={() => onChangeEng(!eng)}>
                 Include English translations
-            </button>
+            </ToggleButton>
 
-            <button
-                type="button"
-                onClick={() => onChangeRom(!rom)}
-                className={`text-aura-bg bg-aura-purple flex-1 rounded px-4 py-2 text-sm font-semibold transition-all duration-200 ${
-                    rom
-                        ? 'ring-offset-aura-bg ring-aura-purple shadow-[0_0_8px_#a277ff] ring-2 ring-offset-2'
-                        : 'hover:bg-aura-purple/80'
-                } `}
-            >
-                Include Romanji/Pinyin
-            </button>
+            <ToggleButton active={rom} onClick={() => onChangeRom(!rom)}>
+                Include Phonetic Transliterations
+            </ToggleButton>
         </div>
 
         <div className="h-10">
             {lang === SupportedLanguages.Japanese && (
-                <button
-                    type="button"
-                    onClick={() => onChangeKana(!kana)}
-                    className={`text-aura-bg bg-aura-purple w-full rounded px-4 py-2 text-sm font-semibold transition-all duration-200 ${
-                        kana
-                            ? 'ring-offset-aura-bg ring-aura-purple shadow-[0_0_8px_#a277ff] ring-2 ring-offset-2'
-                            : 'hover:bg-aura-purple/80'
-                    } `}
-                >
-                    Add kana for kanji
-                </button>
+                <ToggleButton active={kana} onClick={() => onChangeKana(!kana)} className="!h-12">
+                    Add Kana for Kanji
+                </ToggleButton>
             )}
         </div>
     </div>

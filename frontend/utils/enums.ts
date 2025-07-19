@@ -17,4 +17,5 @@ export enum FileType {
     TXT = '.txt',
     PDF = '.pdf',
     EPUB = '.epub',
+    JSON = '.json',
 }
