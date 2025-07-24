@@ -41,6 +41,10 @@ export default [
                 project: true,
             },
         },
+        rules: {
+            'indent': ['error', 4],
+            'object-curly-spacing': ['error', 'always'],
+        },
     },
     {
         files: ['**/*.{jsx,tsx}'],

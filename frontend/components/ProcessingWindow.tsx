@@ -1,7 +1,7 @@
 // components/ProcessingWindow.tsx
 import { FC } from 'react';
 import { SupportedLanguages, FileType } from '@/utils/enums';
-import { startTranslation } from '@/utils/api';
+import { startFileProcessing } from '@/utils/api';
 import { Selector } from './Selector';
 
 interface ProcessingWindowProps {
@@ -37,8 +37,7 @@ export const ProcessingWindow: FC<ProcessingWindowProps> = ({
                 return;
             }
 
-            // Assuming startTranslation is an async function that you've defined elsewhere in your app
-            await startTranslation(file.name, true, true);
+            await startFileProcessing(file.name, file.type, lang, kana, eng, rom, outFmt);
 
             setLog(log + `\nTranslation finished.`);
         } catch (err) {

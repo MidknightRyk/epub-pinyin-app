@@ -43,9 +43,11 @@ async def upload_file(file: UploadFile = File(...)):
 
 class TranslateRequest(BaseModel):
     filename: str
-    include_english: bool = True
-    resume_from: int = 1
-    output_format: str = "text"
+    lang: str
+    kana: bool
+    eng: bool
+    rom: bool
+    outFmt: str
 
 @app.post("/api/translate")
 async def translate_file(payload: TranslateRequest):
@@ -64,7 +66,6 @@ async def translate_file(payload: TranslateRequest):
         return {
             "filename": payload.filename,
             "translated": translated[:500],  # Truncate for preview
-            "resume_from": payload.resume_from
         }
 
     except UnicodeDecodeError:

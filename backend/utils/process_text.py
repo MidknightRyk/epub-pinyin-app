@@ -5,6 +5,7 @@ from phonetic_utils.pinyin_converter import convert_paragraph_to_pinyin
 from translators.translator_CN import translate_paragraphs, split_text_into_chapters
 from utils.output_builder import build_output
 from epub_utils.epub_builder import build_epub  # Only if epub output
+import PyPDF2
 
 # TODO: make this language generic
 
@@ -17,6 +18,13 @@ def process_file(filepath, include_english=True, output_format="epub", resume_fr
     elif ext in ['.txt', '.md']:
         with open(filepath, 'r', encoding='utf-8') as f:
             raw_text = f.read()
+        chapters = split_text_into_chapters(raw_text)
+    elif ext == '.pdf':
+        with open(filepath, 'rb') as f:
+            reader = PyPDF2.PdfReader(f)
+            raw_text = ""
+            for page in reader.pages:
+                raw_text += page.extract_text() or ""
         chapters = split_text_into_chapters(raw_text)
     else:
         raise ValueError("Unsupported file type")

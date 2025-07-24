@@ -14,16 +14,22 @@ export const uploadFile = async (file: File) => {
     });
 };
 
-export const startTranslation = async (
+export const startFileProcessing = async (
     filename: string,
-    showPinyin: boolean,
-    showEnglish: boolean
+    filetype: string,
+    lang: string,
+    kana: boolean,
+    eng: boolean,
+    rom: boolean,
+    outFmt: string,
 ) => {
     return axios.post(`${BASE_URL}/translate`, {
         filename,
-        options: {
-            showPinyin,
-            showEnglish,
-        },
+        filetype,
+        lang,
+        kana,
+        eng,
+        rom,
+        outFmt,
     });
 };
